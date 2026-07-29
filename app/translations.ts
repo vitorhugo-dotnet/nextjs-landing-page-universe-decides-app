@@ -16,6 +16,7 @@ export type Copy = {
   privacy: [string, string, string, string, string, string];
   final: [string, string, string, string];
   footer: string;
+  privacyLink: string;
 };
 
 export const copy: Record<Locale, Copy> = {
@@ -28,6 +29,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Nothing hidden in the void", "No account. No ads. No personal data.", "Your small decisions stay yours. The Universe Decides is deliberately simple and private.", "No login", "No ads", "No tracking"],
     final: ["Your decision is waiting", "Ready to ask the universe?", "Make small choices faster, lighter, and a little more magical.", "Download on Google Play"],
     footer: "Made for the beautifully indecisive.",
+    privacyLink: "Privacy policy",
   },
   pt: {
     nav: ["Experiência", "Aleatoriedade", "Privacidade", "Baixar app"],
@@ -38,6 +40,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Nada escondido no vazio", "Sem conta. Sem anúncios. Sem dados pessoais.", "Suas pequenas decisões continuam sendo suas. The Universe Decides é intencionalmente simples e privado.", "Sem login", "Sem anúncios", "Sem rastreamento"],
     final: ["Sua decisão está esperando", "Pronto para perguntar ao universo?", "Torne pequenas escolhas mais rápidas, leves e um pouco mais mágicas.", "Baixar no Google Play"],
     footer: "Feito para os maravilhosamente indecisos.",
+    privacyLink: "Política de privacidade",
   },
   es: {
     nav: ["Experiencia", "Aleatoriedad", "Privacidad", "Descargar"],
@@ -48,6 +51,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Nada oculto en el vacío", "Sin cuenta. Sin anuncios. Sin datos personales.", "Tus pequeñas decisiones siguen siendo tuyas. La app es deliberadamente simple y privada.", "Sin inicio de sesión", "Sin anuncios", "Sin seguimiento"],
     final: ["Tu decisión te espera", "¿Listo para preguntar al universo?", "Haz pequeñas elecciones más rápidas, ligeras y un poco más mágicas.", "Descargar en Google Play"],
     footer: "Hecho para los maravillosamente indecisos.",
+    privacyLink: "Política de privacidad",
   },
   de: {
     nav: ["Erlebnis", "Zufall", "Datenschutz", "App laden"],
@@ -58,6 +62,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Nichts im Nichts verborgen", "Kein Konto. Keine Werbung. Keine persönlichen Daten.", "Deine kleinen Entscheidungen bleiben deine. Bewusst einfach und privat.", "Kein Login", "Keine Werbung", "Kein Tracking"],
     final: ["Deine Entscheidung wartet", "Bereit, das Universum zu fragen?", "Triff kleine Entscheidungen schneller, leichter und etwas magischer.", "Bei Google Play laden"],
     footer: "Für die wunderbar Unentschlossenen.",
+    privacyLink: "Datenschutzerklärung",
   },
   fr: {
     nav: ["Expérience", "Hasard", "Confidentialité", "Télécharger"],
@@ -68,6 +73,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Rien de caché dans le vide", "Sans compte. Sans publicité. Sans données personnelles.", "Vos petites décisions restent les vôtres. L’app est volontairement simple et privée.", "Sans connexion", "Sans publicité", "Sans suivi"],
     final: ["Votre décision vous attend", "Prêt à interroger l’univers ?", "Rendez les petits choix plus rapides, légers et un peu plus magiques.", "Télécharger sur Google Play"],
     footer: "Conçu pour les merveilleusement indécis.",
+    privacyLink: "Politique de confidentialité",
   },
   hi: {
     nav: ["अनुभव", "यादृच्छिकता", "गोपनीयता", "ऐप पाएँ"],
@@ -78,6 +84,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["शून्य में कुछ छिपा नहीं", "न खाता। न विज्ञापन। न निजी डेटा।", "आपके छोटे फ़ैसले आपके ही रहते हैं। ऐप जानबूझकर सरल और निजी है।", "लॉगिन नहीं", "विज्ञापन नहीं", "ट्रैकिंग नहीं"],
     final: ["आपका फ़ैसला प्रतीक्षा में है", "ब्रह्मांड से पूछने के लिए तैयार?", "छोटे चुनावों को तेज़, हल्का और थोड़ा जादुई बनाएँ।", "Google Play से डाउनलोड करें"],
     footer: "खूबसूरती से दुविधा में रहने वालों के लिए।",
+    privacyLink: "गोपनीयता नीति",
   },
   it: {
     nav: ["Esperienza", "Casualità", "Privacy", "Scarica"],
@@ -88,6 +95,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Nulla è nascosto nel vuoto", "Nessun account. Nessuna pubblicità. Nessun dato personale.", "Le tue piccole decisioni restano tue. L’app è volutamente semplice e privata.", "Nessun login", "Nessuna pubblicità", "Nessun tracking"],
     final: ["La tua decisione ti aspetta", "Pronto a chiedere all’universo?", "Rendi le piccole scelte più rapide, leggere e un po’ più magiche.", "Scarica da Google Play"],
     footer: "Creato per gli splendidamente indecisi.",
+    privacyLink: "Informativa sulla privacy",
   },
   tr: {
     nav: ["Deneyim", "Rastlantı", "Gizlilik", "Uygulamayı al"],
@@ -98,6 +106,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["Boşlukta gizli hiçbir şey yok", "Hesap yok. Reklam yok. Kişisel veri yok.", "Küçük kararların sana ait kalır. Uygulama bilinçli olarak sade ve gizlidir.", "Giriş yok", "Reklam yok", "Takip yok"],
     final: ["Kararın seni bekliyor", "Evrene sormaya hazır mısın?", "Küçük seçimleri daha hızlı, hafif ve biraz daha büyülü yap.", "Google Play’den indir"],
     footer: "Tatlı kararsızlar için yapıldı.",
+    privacyLink: "Gizlilik politikası",
   },
   uk: {
     nav: ["Можливості", "Випадковість", "Приватність", "Завантажити"],
@@ -108,6 +117,7 @@ export const copy: Record<Locale, Copy> = {
     privacy: ["У порожнечі нічого не приховано", "Без акаунта. Без реклами. Без персональних даних.", "Ваші маленькі рішення залишаються вашими. Застосунок навмисно простий і приватний.", "Без входу", "Без реклами", "Без стеження"],
     final: ["Ваше рішення чекає", "Готові запитати Всесвіт?", "Приймайте невеликі рішення швидше, легше й трохи магічніше.", "Завантажити з Google Play"],
     footer: "Створено для чарівно нерішучих.",
+    privacyLink: "Політика конфіденційності",
   },
 };
 
