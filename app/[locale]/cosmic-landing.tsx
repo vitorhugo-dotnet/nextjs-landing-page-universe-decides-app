@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { localeNames, locales, type Copy, type Locale } from "../translations";
 
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.hugoalves.theuniverse";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.hugo.theuniversedecides";
 
 function CosmicObject({ kind }: { kind: number }) {
   if (kind === 0) return <div className="coin"><span>✦</span></div>;
@@ -144,6 +144,7 @@ export default function CosmicLanding({ locale, content }: { locale: Locale; con
         <div>
           <p className="eyebrow">{content.privacy[0]}</p><h2>{content.privacy[1]}</h2><p>{content.privacy[2]}</p>
           <div className="chips">{content.privacy.slice(3).map((chip) => <span key={chip}>✦ {chip}</span>)}</div>
+          <a className="privacy-link" href="https://hugodotnet.dev/the-universe-decides/privacy-policy" target="_blank" rel="noreferrer">{content.privacyLink} ↗</a>
         </div>
       </section>
 
