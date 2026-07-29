@@ -87,7 +87,7 @@ export default function RootLayout({
               operatingSystem: "Android",
               description: metadata.description,
               url: "https://the-universe-decides.ikkiartz.chatgpt.site/en",
-              downloadUrl: "https://play.google.com/store/apps/details?id=com.hugoalves.theuniverse",
+              downloadUrl: "https://play.google.com/store/apps/details?id=com.hugo.theuniversedecides",
               offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
             }),
           }}
