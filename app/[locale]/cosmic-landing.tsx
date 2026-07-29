@@ -1,0 +1,162 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { localeNames, locales, type Copy, type Locale } from "../translations";
+
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.hugoalves.theuniverse";
+
+function CosmicObject({ kind }: { kind: number }) {
+  if (kind === 0) return <div className="coin"><span>✦</span></div>;
+  if (kind === 1) return <div className="dice"><i /><i /><i /><i /><i /></div>;
+  if (kind === 2) {
+    return (
+      <div className="card-stack">
+        <div className="card card-left"><span>♠</span><b>✦</b></div>
+        <div className="card card-center"><span>☾</span><b>✦</b></div>
+        <div className="card card-right"><span>♦</span><b>✦</b></div>
+      </div>
+    );
+  }
+  return <div className="list-orbit"><span>Pizza</span><span>Movie</span><span>Game</span></div>;
+}
+
+function StoreButton({ label }: { label: string }) {
+  return (
+    <a className="store-button" href={PLAY_STORE_URL} target="_blank" rel="noreferrer">
+      <span className="play-icon">▶</span>
+      <span><small>GET IT ON</small>{label}</span>
+    </a>
+  );
+}
+
+function FdroidButton({ label, soon }: { label: string; soon: string }) {
+  return (
+    <button className="store-button store-button-disabled" type="button" disabled aria-label={`${label} — ${soon}`}>
+      <span className="fdroid-icon" aria-hidden="true">F</span>
+      <span><small>{soon}</small>{label}</span>
+    </button>
+  );
+}
+
+function StoreButtons({ playLabel, fdroidLabel, soon }: { playLabel: string; fdroidLabel: string; soon: string }) {
+  return (
+    <div className="store-buttons">
+      <StoreButton label={playLabel} />
+      <FdroidButton label={fdroidLabel} soon={soon} />
+    </div>
+  );
+}
+
+export default function CosmicLanding({ locale, content }: { locale: Locale; content: Copy }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? window.scrollY / max : 0);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [locale]);
+
+  return (
+    <main>
+      <div className="progress" style={{ transform: `scaleX(${scrollProgress})` }} />
+      <header className="site-header">
+        <Link href={`/${locale}`} className="brand" aria-label="The Universe Decides">
+          <span className="brand-mark">✦</span><span>The Universe Decides</span>
+        </Link>
+        <nav aria-label="Primary navigation">
+          <a href="#experience">{content.nav[0]}</a>
+          <a href="#randomness">{content.nav[1]}</a>
+          <a href="#privacy">{content.nav[2]}</a>
+        </nav>
+        <div className="header-actions">
+          <div className="language">
+            <button onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Change language">
+              {locale.toUpperCase()} <span>⌄</span>
+            </button>
+            {menuOpen && (
+              <div className="language-menu">
+                {locales.map((item) => (
+                  <Link key={item} href={`/${item}`} lang={item} onClick={() => setMenuOpen(false)} className={item === locale ? "active" : ""}>
+                    {localeNames[item]}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+          <a className="nav-cta" href={PLAY_STORE_URL} target="_blank" rel="noreferrer">{content.nav[3]}</a>
+        </div>
+      </header>
+
+      <section className="hero">
+        <div className="starfield" aria-hidden="true" />
+        <div className="hero-copy">
+          <p className="eyebrow">{content.hero[0]}</p>
+          <h1>{content.hero[1]}<br /><em>{content.hero[2]}</em></h1>
+          <p className="hero-body">{content.hero[3]}</p>
+          <StoreButtons playLabel={content.hero[4]} fdroidLabel={content.stores[0]} soon={content.stores[1]} />
+        </div>
+        <div className="hero-orbit" aria-hidden="true">
+          <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
+          <div className="cosmic-core"><span>✦</span></div>
+          <i className="planet p1" /><i className="planet p2" /><i className="planet p3" />
+        </div>
+        <a className="scroll-cue" href="#experience"><span>{content.hero[5]}</span><i>↓</i></a>
+      </section>
+
+      <div id="experience" className="story">
+        {content.moments.map((moment, index) => (
+          <section className="story-panel" key={moment[0]}>
+            <div className="story-visual" aria-hidden="true">
+              <div className="object-orbit" /><CosmicObject kind={index} /><span className="visual-label">{moment[2]}</span>
+            </div>
+            <div className="story-copy">
+              <span>0{index + 1} / 04</span><h2>{moment[0]}</h2><p>{moment[1]}</p>
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <section id="randomness" className="randomness">
+        <div className="section-heading">
+          <p className="eyebrow">{content.random[0]}</p><h2>{content.random[1]}</h2><p>{content.random[2]}</p>
+        </div>
+        <div className="random-grid">
+          <article>
+            <div className="signal"><i /><i /><i /><i /><i /></div><span>RANDOM.ORG</span>
+            <h3>{content.random[3]}</h3><p>{content.random[4]}</p>
+          </article>
+          <article>
+            <div className="local-orbit">◎</div><span>LOCAL FALLBACK</span>
+            <h3>{content.random[5]}</h3><p>{content.random[6]}</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="privacy" className="privacy">
+        <div className="privacy-symbol" aria-hidden="true"><div>◉</div></div>
+        <div>
+          <p className="eyebrow">{content.privacy[0]}</p><h2>{content.privacy[1]}</h2><p>{content.privacy[2]}</p>
+          <div className="chips">{content.privacy.slice(3).map((chip) => <span key={chip}>✦ {chip}</span>)}</div>
+        </div>
+      </section>
+
+      <section className="final-cta">
+        <div className="final-rings" aria-hidden="true" />
+        <p className="eyebrow">{content.final[0]}</p><h2>{content.final[1]}</h2><p>{content.final[2]}</p>
+        <StoreButtons playLabel={content.final[3]} fdroidLabel={content.stores[0]} soon={content.stores[1]} />
+      </section>
+
+      <footer>
+        <span className="brand"><span className="brand-mark">✦</span>The Universe Decides</span>
+        <p>{content.footer}</p><span>© {new Date().getFullYear()}</span>
+      </footer>
+    </main>
+  );
+}
