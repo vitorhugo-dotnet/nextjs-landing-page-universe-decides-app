@@ -155,7 +155,7 @@ export default function CosmicLanding({ locale, content }: { locale: Locale; con
 
       <footer>
         <span className="brand"><span className="brand-mark">✦</span>The Universe Decides</span>
-        <p>{content.footer}</p><span>© {new Date().getFullYear()}</span>
+        <p>{content.footer}</p><a href="https://hugodotnet.dev/the-universe-decides/privacy-policy" target="_blank" rel="noreferrer">{content.privacyLink}</a><span>© {new Date().getFullYear()}</span>
       </footer>
     </main>
   );
