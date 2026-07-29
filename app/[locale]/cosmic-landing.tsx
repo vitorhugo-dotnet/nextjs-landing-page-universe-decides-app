@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { localeNames, locales, type Copy, type Locale } from "../translations";
 
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.hugo.theuniversedecides";
@@ -50,22 +50,74 @@ function StoreButtons({ playLabel, fdroidLabel, soon }: { playLabel: string; fdr
 
 export default function CosmicLanding({ locale, content }: { locale: Locale; content: Copy }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    const update = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(max > 0 ? window.scrollY / max : 0);
+    const panels = Array.from(document.querySelectorAll<HTMLElement>(".story-panel"));
+    let frame = 0;
+
+    const updateScrollEffects = () => {
+      frame = 0;
+      const viewport = window.innerHeight;
+      const max = document.documentElement.scrollHeight - viewport;
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+      }
+
+      panels.forEach((panel) => {
+        const visual = panel.querySelector<HTMLElement>(".story-visual");
+        const copy = panel.querySelector<HTMLElement>(".story-copy");
+        const object = panel.querySelector<HTMLElement>(".coin, .dice, .card-stack, .list-orbit");
+        if (!visual || !copy || !object) return;
+
+        const rect = panel.getBoundingClientRect();
+        const progress = Math.max(0, Math.min(1, (viewport - rect.top) / (viewport + rect.height)));
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        const direction = panel.matches(":nth-child(even)") ? 1 : -1;
+
+        visual.style.opacity = String(0.15 + Math.min(1, progress * 2) * 0.85);
+        visual.style.transform = `translate3d(${direction * (1 - eased) * 70}px, ${(1 - eased) * 70}px, 0) scale(${0.78 + eased * 0.22}) rotate(${(1 - eased) * -8}deg)`;
+        copy.style.opacity = String(Math.min(1, progress * 2.2));
+        copy.style.transform = `translate3d(0, ${(1 - Math.min(1, progress * 2.2)) * 90}px, 0)`;
+
+        if (object.classList.contains("coin")) {
+          object.style.transform = `translate3d(${(-35 + eased * 67)}%, ${(45 - eased * 90)}%, 0) rotateY(${-80 + eased * 1160}deg) rotateX(${18 - eased * 36}deg) scale(${1 + Math.sin(eased * Math.PI) * 0.08})`;
+        } else if (object.classList.contains("dice")) {
+          object.style.transform = `translate3d(${(-38 + eased * 74)}%, ${(42 - eased * 84)}%, 0) rotateX(${-65 + eased * 825}deg) rotateY(${-80 + eased * 780}deg) rotateZ(${-24 + eased * 48}deg) scale(${1 + Math.sin(eased * Math.PI) * 0.08})`;
+        } else if (object.classList.contains("card-stack")) {
+          object.style.transform = `translateY(${35 - eased * 70}%) rotateY(${-24 + eased * 48}deg) scale(${0.8 + Math.sin(eased * Math.PI) * 0.28})`;
+          const left = panel.querySelector<HTMLElement>(".card-left");
+          const right = panel.querySelector<HTMLElement>(".card-right");
+          if (left) left.style.transform = `rotate(${-3 - eased * 25}deg) translateX(${-5 - eased * 59}%)`;
+          if (right) right.style.transform = `rotate(${3 + eased * 25}deg) translateX(${5 + eased * 59}%)`;
+        } else {
+          object.style.transform = `translate3d(${(-25 + eased * 49)}%, ${(30 - eased * 58)}%, 0) rotate(${-8 + eased * 11}deg) scale(${1 + Math.sin(eased * Math.PI) * 0.05})`;
+          const items = object.querySelectorAll<HTMLElement>("span");
+          if (items[0]) items[0].style.transform = `translateX(${18 - eased * 36}%)`;
+          if (items[2]) items[2].style.transform = `translateX(${-18 + eased * 36}%)`;
+        }
+      });
     };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateScrollEffects);
+    };
+    updateScrollEffects();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, [locale]);
 
   return (
     <main>
-      <div className="progress" style={{ transform: `scaleX(${scrollProgress})` }} />
+      <div ref={progressRef} className="progress" />
       <header className="site-header">
         <Link href={`/${locale}`} className="brand" aria-label="The Universe Decides">
           <span className="brand-mark">✦</span><span>The Universe Decides</span>
