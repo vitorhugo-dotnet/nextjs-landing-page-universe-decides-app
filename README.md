@@ -1,108 +1,120 @@
-# vinext-starter
+# The Universe Decides — official landing page
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+The international landing page for [The Universe Decides](https://github.com/vitorhugo-dotnet/the_universe_decides), a small cosmic randomizer for people who would rather leave everyday decisions to chance.
 
-## Prerequisites
+The page presents the app through a mystical, space-inspired experience with localized routes, parallax effects, scroll-driven animations and a gentle scrollytelling flow. It is available in English, Portuguese, Spanish, German, French, Hindi, Italian, Turkish and Ukrainian.
 
-- Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+## The app
 
-## Sites Lifecycle
+The Universe Decides helps users make quick, low-stakes decisions by offering:
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+- coin flips;
+- dice rolls;
+- card draws;
+- random choices from a custom list;
+- true randomness from [Random.org](https://www.random.org/) when available;
+- a clearly identified local fallback when the device is offline, Random.org is unavailable or its rate limit is reached.
 
-This starter does not use `wrangler.jsonc`.
+The app requires no account, contains no ads and does not collect personal data.
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout and then validates the Sites artifact. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+| Resource | Link |
+| --- | --- |
+| Android app — Google Play | [Download on Google Play](https://play.google.com/store/apps/details?id=com.hugo.theuniversedecides) |
+| Android app — F-Droid | Coming soon — [tracking issue](https://github.com/vitorhugo-dotnet/the_universe_decides/issues/4) |
+| App source code | [the_universe_decides](https://github.com/vitorhugo-dotnet/the_universe_decides) |
+| Landing page | [the-universe-decides.ikkiartz.chatgpt.site](https://the-universe-decides.ikkiartz.chatgpt.site) |
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+## Features of this site
 
-## Included Shape
+- localized routes: `/en`, `/pt`, `/es`, `/de`, `/fr`, `/hi`, `/it`, `/tr` and `/uk`;
+- automatic browser-language detection with English fallback;
+- language switcher without losing the current section;
+- responsive layout for desktop and mobile;
+- CSS parallax and scroll-driven animations for the coin, dice, cards and list;
+- scroll snapping with `proximity`, so the page remains controllable;
+- `prefers-reduced-motion` support;
+- favicon based on the app logo.
 
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## Run locally
 
-## Workspace Auth Headers
+### Requirements
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+- Node.js `>=22.13.0`;
+- Linux, WSL or another environment with `flock`, `curl` and GNU `timeout`.
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+Install the locked dependencies and start the development server:
 
-Treat the full name as optional and fall back to email when it is absent:
+```bash
+npm run install:ci
+npm run dev
+```
 
-```tsx
-import { headers } from "next/headers";
+The development server is normally available at `http://localhost:5173`.
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
+Useful commands:
 
-  const displayName = fullName ?? email;
-  // ...
+```bash
+npm run build              # build and validate the Sites artifact
+npm test                   # build, validate and run rendered HTML tests
+npm run lint               # run ESLint
+npm run start              # start the built application
+npm run validate:artifact  # validate an existing artifact
+```
+
+The project uses Next-compatible React code executed by [Vinext](https://github.com/cloudflare/vinext), with Vite as the development/build entry point. Application code lives mainly under `app/`.
+
+## Working with GPT Sites
+
+[GPT Sites](https://learn.chatgpt.com/docs/sites) can create, host, refine and share compatible websites from ChatGPT. In this repository, it is the hosted deployment layer rather than the application framework: the site remains normal versioned source code, while Sites builds and deploys a pushed commit.
+
+### The important lifecycle
+
+1. Make a focused change under `app/`, `public/` or the relevant configuration file.
+2. Run the smallest useful local checks (`npm run lint`, `npm test` or `npm run build`).
+3. Commit and push the exact source state.
+4. Save a Sites version from that commit.
+5. Deploy the saved version and inspect the production URL.
+
+The deployed version must correspond to the commit that was pushed. Keeping that relationship makes a published site reproducible and makes rollback/debugging much less mysterious.
+
+### Sites project configuration
+
+`.openai/hosting.json` stores the Sites project identity and optional bindings:
+
+```json
+{
+  "project_id": "appgprj_…",
+  "d1": null,
+  "r2": null
 }
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+Do not invent or change `project_id`: it identifies the existing hosted project. D1 and R2 are `null` here because this landing page does not need a database or object storage.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+### Auth headers are optional
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+Sites can provide request headers such as `oai-authenticated-user-email` to workspace-authenticated sites. This project intentionally keeps its public landing page anonymous and does not use sign-in. If a future feature needs user-specific pages, identity should be read server-side and protected routes should be made dynamic; authentication is not a substitute for workspace membership or authorization checks.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+### Practical rules
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+- keep content and translations in source control;
+- do not hard-code secrets in the repository;
+- preserve `.openai/hosting.json` when syncing the project;
+- deploy only after the source commit and the saved Sites version match;
+- test reduced-motion and mobile behavior before publishing animation changes;
+- keep the F-Droid button disabled until the package is actually available.
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## Project structure
 
-## Diagnostic Commands
+```text
+app/                    React/Next-compatible application code
+public/                 static assets, including the favicon
+tests/                  rendered HTML verification
+scripts/                bounded install, build and artifact checks
+.openai/hosting.json    GPT Sites project configuration
+vite.config.ts          local Vite/Vinext configuration
+```
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build and validate the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build, validate, and verify the rendered development-preview metadata
-- `npm run validate:artifact`: recheck an existing artifact's manifest and ESM `default.fetch` export
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+## License
 
-Use build and validation commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
-
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+See [LICENSE](LICENSE).
