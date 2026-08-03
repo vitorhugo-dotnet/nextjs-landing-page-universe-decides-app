@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { localeNames, locales, type Copy, type Locale } from "../translations";
 
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.hugo.theuniversedecides";
+const FDROID_URL = "https://f-droid.org/packages/com.hugo.theuniversedecides";
 
 function CosmicObject({ kind }: { kind: number }) {
   if (kind === 0) return <div className="coin"><span>✦</span></div>;
@@ -30,20 +31,20 @@ function StoreButton({ label }: { label: string }) {
   );
 }
 
-function FdroidButton({ label, soon }: { label: string; soon: string }) {
+function FdroidButton({ label }: { label: string }) {
   return (
-    <button className="store-button store-button-disabled" type="button" disabled aria-label={`${label} — ${soon}`}>
+    <a className="store-button" href={FDROID_URL} target="_blank" rel="noreferrer">
       <span className="fdroid-icon" aria-hidden="true">F</span>
-      <span><small>{soon}</small>{label}</span>
-    </button>
+      <span><small>GET IT ON</small>{label}</span>
+    </a>
   );
 }
 
-function StoreButtons({ playLabel, fdroidLabel, soon }: { playLabel: string; fdroidLabel: string; soon: string }) {
+function StoreButtons({ playLabel, fdroidLabel }: { playLabel: string; fdroidLabel: string }) {
   return (
     <div className="store-buttons">
       <StoreButton label={playLabel} />
-      <FdroidButton label={fdroidLabel} soon={soon} />
+      <FdroidButton label={fdroidLabel} />
     </div>
   );
 }
@@ -152,7 +153,7 @@ export default function CosmicLanding({ locale, content }: { locale: Locale; con
           <p className="eyebrow">{content.hero[0]}</p>
           <h1>{content.hero[1]}<br /><em>{content.hero[2]}</em></h1>
           <p className="hero-body">{content.hero[3]}</p>
-          <StoreButtons playLabel={content.hero[4]} fdroidLabel={content.stores[0]} soon={content.stores[1]} />
+          <StoreButtons playLabel={content.hero[4]} fdroidLabel={content.stores[0]} />
         </div>
         <div className="hero-orbit" aria-hidden="true">
           <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
@@ -203,7 +204,7 @@ export default function CosmicLanding({ locale, content }: { locale: Locale; con
       <section className="final-cta">
         <div className="final-rings" aria-hidden="true" />
         <p className="eyebrow">{content.final[0]}</p><h2>{content.final[1]}</h2><p>{content.final[2]}</p>
-        <StoreButtons playLabel={content.final[3]} fdroidLabel={content.stores[0]} soon={content.stores[1]} />
+        <StoreButtons playLabel={content.final[3]} fdroidLabel={content.stores[0]} />
       </section>
 
       <footer>
