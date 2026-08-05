@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = "https://the-universe-decides.ikkiartz.chatgpt.site";
+import { siteUrl } from "./seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/" }],
+    rules: { userAgent: "*", allow: "/", disallow: ["/_next/", "/api/"] },
     sitemap: `${siteUrl}/sitemap.xml`,
-    host: siteUrl,
   };
 }
